@@ -224,7 +224,7 @@ body {
 /* Mobile Sub-Nav / View Switcher */
 .mobile-view-toggle {
   display: none;
-  margin: 12px 16px 0 16px;
+  margin: 12px 14px 0 14px;
   background: var(--color-bg-subtle);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -250,6 +250,15 @@ body {
   background: var(--color-bg-surface);
   color: var(--color-primary);
   box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+  .editor-col-form.mobile-hidden {
+    display: none !important;
+  }
+  .editor-col-preview.mobile-hidden {
+    display: none !important;
+  }
 }
 
 /* Buttons */
@@ -430,17 +439,7 @@ body {
   gap: 10px;
 }
 
-/* Responsive Line Item Card for Mobile */
-.mobile-item-card {
-  display: none;
-  background: var(--color-bg-subtle);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 14px;
-  margin-bottom: 12px;
-}
-
-/* Desktop Line Items Table */
+/* Line Items Table */
 .items-form-table {
   width: 100%;
   border-collapse: collapse;
@@ -461,7 +460,16 @@ body {
   vertical-align: top;
 }
 
-/* Live Invoice A4 Preview Container */
+.mobile-item-card {
+  display: none;
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+/* Desktop A4 Sheet Viewport */
 .preview-sticky-wrapper {
   position: sticky;
   top: 76px;
@@ -490,7 +498,7 @@ body {
   max-height: calc(100vh - 150px);
   overflow-y: auto;
   overflow-x: auto;
-  background: #475569;
+  background: #334155;
   padding: 16px;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   display: flex;
@@ -505,8 +513,8 @@ body {
   position: relative;
   width: 794px;
   min-height: 1123px;
-  background: #ffffff;
-  color: #1e293b;
+  background: #ffffff !important;
+  color: #1e293b !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
@@ -514,6 +522,19 @@ body {
   overflow: hidden;
   transform-origin: top center;
   flex-shrink: 0;
+}
+
+/* Mobile Clean Document View (Activated on small screens) */
+.mobile-doc-view {
+  display: none;
+  width: 100%;
+  background: #ffffff;
+  color: #1e293b;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  padding: 18px 16px;
+  margin-bottom: 20px;
 }
 
 /* Badges */
@@ -665,7 +686,6 @@ body {
   vertical-align: middle;
 }
 
-/* Mobile Invoice Cards in List */
 .mobile-invoice-card {
   display: none;
   background: var(--color-bg-surface);
@@ -710,7 +730,7 @@ body {
   }
   .preview-sticky-wrapper {
     position: static;
-    margin-top: 20px;
+    margin-top: 16px;
   }
 }
 
@@ -744,9 +764,6 @@ body {
     padding: 7px 8px;
     font-size: 12px;
   }
-  .nav-tab-btn span {
-    font-size: 12px;
-  }
 
   .mobile-view-toggle {
     display: flex;
@@ -762,11 +779,27 @@ body {
     gap: 8px;
   }
 
-  /* Hide table headers, show mobile item cards */
+  /* Hide table headers, show mobile item cards in editor */
   .desktop-table-view {
     display: none;
   }
   .mobile-item-card {
+    display: block;
+  }
+
+  /* Desktop A4 sheet hidden on mobile in favor of Mobile Doc View */
+  .desktop-a4-viewport {
+    display: none;
+  }
+  .mobile-doc-view {
+    display: block;
+  }
+
+  /* Invoices List table on mobile */
+  .desktop-invoices-table {
+    display: none;
+  }
+  .mobile-invoice-card {
     display: block;
   }
 
@@ -780,14 +813,6 @@ body {
   .stats-grid {
     grid-template-columns: 1fr;
     gap: 10px;
-  }
-
-  /* Invoices List table on mobile */
-  .desktop-invoices-table {
-    display: none;
-  }
-  .mobile-invoice-card {
-    display: block;
   }
 
   /* Toast centered on mobile */

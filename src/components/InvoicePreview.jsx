@@ -1,34 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   ZoomIn, 
   ZoomOut, 
   Maximize2, 
   Download, 
   Printer, 
-  Loader2
+  Loader2,
+  Calendar,
+  Building,
+  CreditCard,
+  CheckCircle2
 } from 'lucide-react';
 
 export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf }) {
-  // Auto-calculate initial zoom based on screen width
-  const getInitialZoom = () => {
-    if (typeof window === 'undefined') return 0.85;
-    if (window.innerWidth < 480) return 0.42;
-    if (window.innerWidth < 768) return 0.55;
-    if (window.innerWidth < 1200) return 0.75;
-    return 0.85;
-  };
-
-  const [zoom, setZoom] = useState(getInitialZoom);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 480 && zoom > 0.5) {
-        setZoom(0.42);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const [zoom, setZoom] = useState(0.85);
 
   const {
     invoiceNumber = 'VC-INV-0001',
@@ -77,19 +62,19 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
       {/* Top Toolbar */}
       <div className="preview-toolbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '12.5px', fontWeight: '700', fontFamily: 'var(--font-display)', color: 'var(--color-text-main)' }}>
-            Letterhead Preview
+          <span style={{ fontSize: '13px', fontWeight: '700', fontFamily: 'var(--font-display)', color: 'var(--color-text-main)' }}>
+            Invoice Preview
           </span>
-          <span className="badge badge-paid" style={{ fontSize: '9.5px' }}>A4</span>
+          <span className="badge badge-paid" style={{ fontSize: '9.5px' }}>Official</span>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-          {/* Zoom controls */}
-          <div style={{ display: 'flex', alignItems: 'center', background: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-md)', padding: '2px 4px' }}>
+          {/* Zoom controls (desktop only) */}
+          <div className="hide-on-xs" style={{ display: 'flex', alignItems: 'center', background: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-md)', padding: '2px 4px' }}>
             <button 
               className="btn-icon" 
               style={{ border: 'none', background: 'transparent', padding: '3px', minWidth: '26px', minHeight: '26px' }}
-              onClick={() => setZoom(prev => Math.max(0.35, prev - 0.08))}
+              onClick={() => setZoom(prev => Math.max(0.4, prev - 0.1))}
               title="Zoom out"
             >
               <ZoomOut size={13} />
@@ -100,7 +85,7 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
             <button 
               className="btn-icon" 
               style={{ border: 'none', background: 'transparent', padding: '3px', minWidth: '26px', minHeight: '26px' }}
-              onClick={() => setZoom(prev => Math.min(1.2, prev + 0.08))}
+              onClick={() => setZoom(prev => Math.min(1.2, prev + 0.1))}
               title="Zoom in"
             >
               <ZoomIn size={13} />
@@ -108,7 +93,7 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
             <button 
               className="btn-icon" 
               style={{ border: 'none', background: 'transparent', padding: '3px', minWidth: '26px', minHeight: '26px' }}
-              onClick={() => setZoom(getInitialZoom())}
+              onClick={() => setZoom(0.85)}
               title="Fit Screen"
             >
               <Maximize2 size={12} />
@@ -116,9 +101,9 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
           </div>
 
           {/* Print button */}
-          <button className="btn btn-secondary btn-sm" onClick={handlePrint} title="Browser Print">
+          <button className="btn btn-secondary btn-sm" onClick={handlePrint} title="Print Invoice">
             <Printer size={13} />
-            <span className="hide-on-xs">Print</span>
+            <span>Print</span>
           </button>
 
           {/* Puppeteer PDF Download */}
@@ -126,7 +111,7 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
             className="btn btn-primary btn-sm" 
             onClick={onDownloadPdf}
             disabled={isGeneratingPdf}
-            title="Download PDF"
+            title="Download Official PDF"
           >
             {isGeneratingPdf ? (
               <>
@@ -143,8 +128,163 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
         </div>
       </div>
 
-      {/* Viewport for A4 sheet */}
-      <div className="preview-a4-viewport">
+      {/* ========================================================
+          📱 1. MOBILE RESPONSIVE DOCUMENT CARD (<= 768px)
+          ======================================================== */}
+      <div className="mobile-doc-view">
+        {/* Brand Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <img 
+            src="/logo.png" 
+            alt="Village Coders" 
+            style={{ height: '48px', maxWidth: '180px', objectFit: 'contain' }} 
+          />
+          <div style={{ textAlign: 'right', fontSize: '10px', color: '#475569', lineHeight: 1.3 }}>
+            <div style={{ fontWeight: '700', color: '#0f172a' }}>Village Coders</div>
+            <div>villagecoders7@gmail.com</div>
+            <div>+234 808 5742 261</div>
+          </div>
+        </div>
+
+        {/* Gradient Line */}
+        <div style={{ height: '3px', background: 'linear-gradient(90deg, #1097a8 0%, #15b0c4 60%, #44cadc 100%)', borderRadius: '2px', marginBottom: '14px' }} />
+
+        {/* Invoice Title & Status */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
+          <div>
+            <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#0f172a', fontFamily: "'Outfit', sans-serif" }}>
+              {title || 'INVOICE'}
+            </h2>
+            <div style={{ fontSize: '13px', fontWeight: '700', color: '#028090', marginTop: '2px' }}>
+              #{invoiceNumber}
+            </div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <span className={`badge badge-${status.toLowerCase()}`}>
+              {status.toUpperCase()}
+            </span>
+            {poNumber && <div style={{ fontSize: '10px', color: '#64748b', marginTop: '3px' }}>PO: {poNumber}</div>}
+          </div>
+        </div>
+
+        {/* Client & Dates Info Card */}
+        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', marginBottom: '14px' }}>
+          <div style={{ fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', color: '#028090', letterSpacing: '0.5px', marginBottom: '4px' }}>
+            Billed To:
+          </div>
+          <div style={{ fontSize: '14px', fontWeight: '700', color: '#0f172a' }}>
+            {client?.name || 'Valued Client'}
+          </div>
+          {client?.company && <div style={{ fontSize: '12px', fontWeight: '600', color: '#334155' }}>{client.company}</div>}
+          {client?.address && <div style={{ fontSize: '11px', color: '#475569' }}>{client.address}{client.city ? `, ${client.city}` : ''}</div>}
+          {client?.email && <div style={{ fontSize: '11px', color: '#475569' }}>{client.email}</div>}
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '10px', paddingTop: '8px', borderTop: '1px dashed #cbd5e1', fontSize: '11px' }}>
+            <div>
+              <span style={{ color: '#64748b' }}>Issue Date: </span>
+              <strong>{formatDate(issueDate)}</strong>
+            </div>
+            <div>
+              <span style={{ color: '#64748b' }}>Due Date: </span>
+              <strong>{formatDate(dueDate) || 'On Receipt'}</strong>
+            </div>
+          </div>
+        </div>
+
+        {/* Line Items List */}
+        <div style={{ marginBottom: '14px' }}>
+          <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', color: '#64748b', marginBottom: '6px' }}>
+            Services & Items:
+          </div>
+          {items && items.map((it, idx) => (
+            <div key={it.id || idx} style={{ borderBottom: '1px solid #f1f5f9', padding: '8px 0' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div style={{ flex: 1, paddingRight: '8px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: '700', color: '#0f172a' }}>{it.description || 'Service'}</div>
+                  {it.details && <div style={{ fontSize: '11px', color: '#64748b', marginTop: '1px' }}>{it.details}</div>}
+                  <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                    {it.quantity || 1} &times; {formatCurrency(it.rate)}
+                  </div>
+                </div>
+                <div style={{ fontSize: '13px', fontWeight: '800', color: '#0f172a', whiteSpace: 'nowrap' }}>
+                  {formatCurrency(it.amount || ((it.quantity || 1) * (it.rate || 0)))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Totals Breakdown */}
+        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', marginBottom: '14px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 12px', fontSize: '11.5px', borderBottom: '1px solid #f1f5f9' }}>
+            <span style={{ color: '#64748b' }}>Subtotal:</span>
+            <span style={{ fontWeight: '600' }}>{formatCurrency(subtotal)}</span>
+          </div>
+          {discountAmount > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 12px', fontSize: '11.5px', borderBottom: '1px solid #f1f5f9', color: '#16a34a' }}>
+              <span>Discount ({pricing.discountValue}%):</span>
+              <span>-{formatCurrency(discountAmount)}</span>
+            </div>
+          )}
+          {taxAmount > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 12px', fontSize: '11.5px', borderBottom: '1px solid #f1f5f9' }}>
+              <span style={{ color: '#64748b' }}>Tax ({taxRate}%):</span>
+              <span>+{formatCurrency(taxAmount)}</span>
+            </div>
+          )}
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', fontSize: '13px', fontWeight: '700', borderBottom: '1px solid #cbd5e1' }}>
+            <span>Total:</span>
+            <span>{formatCurrency(total)}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#0f172a', color: '#ffffff', padding: '10px 12px' }}>
+            <span style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', color: '#38bdf8' }}>Balance Due</span>
+            <span style={{ fontSize: '17px', fontWeight: '800' }}>{formatCurrency(balanceDue)}</span>
+          </div>
+        </div>
+
+        {/* Payment Instructions */}
+        {paymentDetails?.bankName && (
+          <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '10px 12px', marginBottom: '14px', fontSize: '11px' }}>
+            <div style={{ fontWeight: '700', color: '#028090', textTransform: 'uppercase', marginBottom: '4px' }}>Bank Payment:</div>
+            <div>Bank: <strong>{paymentDetails.bankName}</strong></div>
+            <div>Account: <strong>{paymentDetails.accountNumber}</strong> ({paymentDetails.accountName})</div>
+            {paymentDetails?.paymentTerms && <div style={{ marginTop: '4px', color: '#64748b' }}>Terms: {paymentDetails.paymentTerms}</div>}
+          </div>
+        )}
+
+        {/* Signature */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingTop: '10px', borderTop: '1px solid #e2e8f0' }}>
+          <div>
+            <div style={{ fontSize: '9px', textTransform: 'uppercase', color: '#64748b' }}>Authorized By:</div>
+            <div style={{ fontSize: '11px', fontWeight: '700', color: '#0f172a' }}>{signature?.signerName || 'Village Coders Ltd'}</div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: '20px', color: '#0f172a' }}>
+              {signature?.type === 'drawn' && signature.value ? (
+                <img src={signature.value} alt="Sig" style={{ height: '24px' }} />
+              ) : (
+                signature?.value || 'Village Coders'
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Big Action Button for Mobile */}
+        <button 
+          className="btn btn-primary" 
+          style={{ width: '100%', marginTop: '16px', padding: '11px', fontSize: '14px' }}
+          onClick={onDownloadPdf}
+          disabled={isGeneratingPdf}
+        >
+          {isGeneratingPdf ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+          <span>Download Official PDF ({invoiceNumber})</span>
+        </button>
+      </div>
+
+      {/* ========================================================
+          💻 2. DESKTOP A4 LETTERHEAD VIEWPORT (> 768px)
+          ======================================================== */}
+      <div className="preview-a4-viewport desktop-a4-viewport">
         <div 
           className="a4-sheet"
           style={{
@@ -152,7 +292,7 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
             marginBottom: `${(zoom - 1) * 1123}px`
           }}
         >
-          {/* Watermark in background using logo.png */}
+          {/* Watermark */}
           <div style={{
             position: 'absolute',
             top: '52%',
@@ -163,7 +303,6 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
             pointerEvents: 'none',
             zIndex: 1,
             display: 'flex',
-            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center'
           }}>
@@ -178,7 +317,6 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
           <div style={{ position: 'relative', zIndex: 10, padding: '26px 40px 14px 40px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               
-              {/* Left Brand Logo Image from logo.png */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <img 
                   src="/logo.png" 
@@ -187,10 +325,8 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
                 />
               </div>
 
-              {/* Vertical divider */}
               <div style={{ width: '2px', height: '50px', backgroundColor: '#8c725c', margin: '0 8px', borderRadius: '2px' }} />
 
-              {/* Right Contact Info */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '10.5px', color: '#2d3748', fontWeight: 500 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <span>📍</span>
@@ -211,7 +347,6 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
               </div>
             </div>
 
-            {/* Gradient Line Bar */}
             <div style={{ marginTop: '14px', height: '3.5px', background: 'linear-gradient(90deg, #1097a8 0%, #15b0c4 60%, #44cadc 100%)', borderRadius: '2px', width: '100%' }} />
           </div>
 
@@ -246,10 +381,9 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
                   {client?.name || 'Valued Client'}
                 </div>
                 {client?.company && <div style={{ fontSize: '11.5px', fontWeight: 600, color: '#334155', marginBottom: '3px' }}>{client.company}</div>}
-                {client?.address && <div style={{ fontSize: '11px', color: '#475569' }}>{client.address}{client.city ? `, ${client.city}` : ''}{client.country ? `, ${client.country}` : ''}</div>}
+                {client?.address && <div style={{ fontSize: '11px', color: '#475569' }}>{client.address}{client.city ? `, ${client.city}` : ''}</div>}
                 {client?.email && <div style={{ fontSize: '11px', color: '#475569' }}>Email: {client.email}</div>}
                 {client?.phone && <div style={{ fontSize: '11px', color: '#475569' }}>Phone: {client.phone}</div>}
-                {client?.taxId && <div style={{ fontSize: '11px', color: '#475569' }}>Tax ID: {client.taxId}</div>}
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
@@ -312,8 +446,6 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
 
             {/* Bottom Split: Payment Info vs Totals */}
             <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 1fr', gap: '20px', alignItems: 'start' }}>
-              
-              {/* Payment Details */}
               <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px 14px' }}>
                 <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '10px', fontWeight: 700, letterSpacing: '0.8px', textTransform: 'uppercase', color: '#028090', marginBottom: '8px' }}>
                   Payment Instructions
@@ -336,18 +468,6 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
                     <span style={{ fontWeight: 600, color: '#0f172a' }}>{paymentDetails.accountNumber}</span>
                   </div>
                 )}
-                {paymentDetails?.swift && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10.5px', marginBottom: '4px' }}>
-                    <span style={{ color: '#64748b' }}>SWIFT / BIC:</span>
-                    <span style={{ fontWeight: 600, color: '#0f172a' }}>{paymentDetails.swift}</span>
-                  </div>
-                )}
-                {paymentDetails?.paypalEmail && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10.5px', marginBottom: '4px' }}>
-                    <span style={{ color: '#64748b' }}>PayPal:</span>
-                    <span style={{ fontWeight: 600, color: '#0f172a' }}>{paymentDetails.paypalEmail}</span>
-                  </div>
-                )}
                 {paymentDetails?.paymentTerms && (
                   <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px dashed #cbd5e1', fontSize: '10px', color: '#475569', lineHeight: 1.35 }}>
                     <strong>Terms:</strong> {paymentDetails.paymentTerms}
@@ -355,7 +475,6 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
                 )}
               </div>
 
-              {/* Totals */}
               <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '7px 14px', fontSize: '11px', borderBottom: '1px solid #f1f5f9' }}>
                   <span style={{ color: '#64748b' }}>Subtotal</span>
@@ -364,7 +483,7 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
 
                 {discountAmount > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '7px 14px', fontSize: '11px', borderBottom: '1px solid #f1f5f9', color: '#16a34a' }}>
-                    <span>Discount {pricing.discountType === 'percent' ? `(${pricing.discountValue}%)` : ''}</span>
+                    <span>Discount</span>
                     <span>-{formatCurrency(discountAmount)}</span>
                   </div>
                 )}
@@ -376,24 +495,10 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
                   </div>
                 )}
 
-                {shipping > 0 && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '7px 14px', fontSize: '11px', borderBottom: '1px solid #f1f5f9' }}>
-                    <span style={{ color: '#64748b' }}>Fee / Extras</span>
-                    <span style={{ fontWeight: 600 }}>+{formatCurrency(shipping)}</span>
-                  </div>
-                )}
-
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 14px', fontSize: '12px', fontWeight: 700, background: '#f8fafc', borderBottom: '1px solid #cbd5e1', borderTop: '1px solid #cbd5e1' }}>
                   <span style={{ fontFamily: "'Outfit', sans-serif", color: '#0f172a' }}>Total</span>
                   <span style={{ fontFamily: "'Outfit', sans-serif", color: '#0f172a' }}>{formatCurrency(total)}</span>
                 </div>
-
-                {deposit > 0 && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '7px 14px', fontSize: '11px', borderBottom: '1px solid #f1f5f9', color: '#028090' }}>
-                    <span>Paid / Deposit</span>
-                    <span>-{formatCurrency(deposit)}</span>
-                  </div>
-                )}
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#0f172a', color: '#ffffff', padding: '10px 14px' }}>
                   <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '11px', fontWeight: 700, letterSpacing: '0.8px', textTransform: 'uppercase', color: '#38bdf8' }}>
@@ -404,7 +509,6 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
                   </span>
                 </div>
               </div>
-
             </div>
 
             {/* Closing & Signature */}

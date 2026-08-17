@@ -247,8 +247,8 @@ export default function App() {
       <main className="main-content">
         {activeTab === 'editor' && (
           <div className="editor-layout">
-            {/* Left Column: Form Editor (Always shown on desktop, conditional on mobile) */}
-            <div style={{ display: window.innerWidth <= 768 && mobileView !== 'form' ? 'none' : 'block' }}>
+            {/* Left Column: Form Editor */}
+            <div className={`editor-col-form ${mobileView !== 'form' ? 'mobile-hidden' : ''}`}>
               <InvoiceEditor 
                 invoice={invoice}
                 onChange={setInvoice}
@@ -262,8 +262,8 @@ export default function App() {
               />
             </div>
 
-            {/* Right Column: Live Letterhead A4 Preview (Always shown on desktop, conditional on mobile) */}
-            <div style={{ display: window.innerWidth <= 768 && mobileView !== 'preview' ? 'none' : 'block' }}>
+            {/* Right Column: Live Letterhead A4 Preview */}
+            <div className={`editor-col-preview ${mobileView !== 'preview' ? 'mobile-hidden' : ''}`}>
               <InvoicePreview 
                 invoice={invoice}
                 onDownloadPdf={handleDownloadPdf}
