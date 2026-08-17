@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { CheckCircle, AlertCircle, Info, X } from 'lucide-react';
+import { CheckCircle, AlertCircle, Info, Edit3, Eye } from 'lucide-react';
 import Header from './components/Header';
 import InvoiceEditor from './components/InvoiceEditor';
 import InvoicePreview from './components/InvoicePreview';
@@ -13,6 +13,7 @@ import { api } from './services/api';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('editor'); // 'editor' | 'list' | 'stats'
+  const [mobileView, setMobileView] = useState('form'); // 'form' | 'preview'
   const [theme, setTheme] = useState(() => localStorage.getItem('vc_theme') || 'light');
   const [invoice, setInvoice] = useState(DEFAULT_INVOICE_STATE);
   const [isSaving, setIsSaving] = useState(false);
@@ -75,14 +76,14 @@ export default function App() {
       let res;
       if (invoice._id) {
         res = await api.updateInvoice(invoice._id, invoice);
-        showToast(`Invoice ${invoice.invoiceNumber} updated in database!`, 'success');
+        showToast(`Invoice ${invoice.invoiceNumber} updated!`, 'success');
       } else {
         res = await api.createInvoice(invoice);
-        showToast(`Invoice ${invoice.invoiceNumber} saved to MongoDB Atlas!`, 'success');
+        showToast(`Invoice ${invoice.invoiceNumber} saved to MongoDB!`, 'success');
         confetti({
-          particleCount: 80,
+          particleCount: 60,
           spread: 70,
-          origin: { y: 0.6 }
+          origin: { y: 0.7 }
         });
       }
       if (res.success && res.data) {
@@ -126,6 +127,7 @@ export default function App() {
         issueDate: new Date().toISOString().split('T')[0]
       });
       setActiveTab('editor');
+      setMobileView('form');
       showToast('New invoice blank sheet ready', 'info');
     } catch (err) {
       setInvoice({
@@ -140,11 +142,13 @@ export default function App() {
   const handleEditInvoice = (selectedInvoice) => {
     setInvoice(selectedInvoice);
     setActiveTab('editor');
+    setMobileView('form');
   };
 
   const handlePreviewInvoice = (selectedInvoice) => {
     setInvoice(selectedInvoice);
     setActiveTab('editor');
+    setMobileView('preview');
   };
 
   const handleSelectPreset = (preset) => {
@@ -219,29 +223,53 @@ export default function App() {
         onOpenPresets={() => setIsPresetsOpen(true)}
       />
 
+      {/* Mobile Toggle on Builder Tab */}
+      {activeTab === 'editor' && (
+        <div className="mobile-view-toggle">
+          <button 
+            className={`mobile-toggle-btn ${mobileView === 'form' ? 'active' : ''}`}
+            onClick={() => setMobileView('form')}
+          >
+            <Edit3 size={14} />
+            <span>Edit Form</span>
+          </button>
+          <button 
+            className={`mobile-toggle-btn ${mobileView === 'preview' ? 'active' : ''}`}
+            onClick={() => setMobileView('preview')}
+          >
+            <Eye size={14} />
+            <span>Live A4 Preview</span>
+          </button>
+        </div>
+      )}
+
       {/* Main Content Body */}
       <main className="main-content">
         {activeTab === 'editor' && (
           <div className="editor-layout">
-            {/* Left Column: Form Editor */}
-            <InvoiceEditor 
-              invoice={invoice}
-              onChange={setInvoice}
-              onSave={handleSaveInvoice}
-              onDownloadPdf={handleDownloadPdf}
-              onOpenPresets={() => setIsPresetsOpen(true)}
-              onOpenSignature={() => setIsSignatureOpen(true)}
-              onReset={handleNewInvoice}
-              isSaving={isSaving}
-              isGeneratingPdf={isGeneratingPdf}
-            />
+            {/* Left Column: Form Editor (Always shown on desktop, conditional on mobile) */}
+            <div style={{ display: window.innerWidth <= 768 && mobileView !== 'form' ? 'none' : 'block' }}>
+              <InvoiceEditor 
+                invoice={invoice}
+                onChange={setInvoice}
+                onSave={handleSaveInvoice}
+                onDownloadPdf={handleDownloadPdf}
+                onOpenPresets={() => setIsPresetsOpen(true)}
+                onOpenSignature={() => setIsSignatureOpen(true)}
+                onReset={handleNewInvoice}
+                isSaving={isSaving}
+                isGeneratingPdf={isGeneratingPdf}
+              />
+            </div>
 
-            {/* Right Column: Live Letterhead A4 Preview */}
-            <InvoicePreview 
-              invoice={invoice}
-              onDownloadPdf={handleDownloadPdf}
-              isGeneratingPdf={isGeneratingPdf}
-            />
+            {/* Right Column: Live Letterhead A4 Preview (Always shown on desktop, conditional on mobile) */}
+            <div style={{ display: window.innerWidth <= 768 && mobileView !== 'preview' ? 'none' : 'block' }}>
+              <InvoicePreview 
+                invoice={invoice}
+                onDownloadPdf={handleDownloadPdf}
+                isGeneratingPdf={isGeneratingPdf}
+              />
+            </div>
           </div>
         )}
 
@@ -287,11 +315,11 @@ export default function App() {
             }`
           }}>
             {t.type === 'error' ? (
-              <AlertCircle size={18} style={{ color: 'var(--color-danger)' }} />
+              <AlertCircle size={16} style={{ color: 'var(--color-danger)' }} />
             ) : t.type === 'info' ? (
-              <Info size={18} style={{ color: 'var(--color-info)' }} />
+              <Info size={16} style={{ color: 'var(--color-info)' }} />
             ) : (
-              <CheckCircle size={18} style={{ color: 'var(--color-success)' }} />
+              <CheckCircle size={16} style={{ color: 'var(--color-success)' }} />
             )}
             <span>{t.message}</span>
           </div>

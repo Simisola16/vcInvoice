@@ -1,16 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ZoomIn, 
   ZoomOut, 
   Maximize2, 
   Download, 
   Printer, 
-  Loader2,
-  Sparkles
+  Loader2
 } from 'lucide-react';
 
 export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf }) {
-  const [zoom, setZoom] = useState(0.85);
+  // Auto-calculate initial zoom based on screen width
+  const getInitialZoom = () => {
+    if (typeof window === 'undefined') return 0.85;
+    if (window.innerWidth < 480) return 0.42;
+    if (window.innerWidth < 768) return 0.55;
+    if (window.innerWidth < 1200) return 0.75;
+    return 0.85;
+  };
+
+  const [zoom, setZoom] = useState(getInitialZoom);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 480 && zoom > 0.5) {
+        setZoom(0.42);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const {
     invoiceNumber = 'VC-INV-0001',
@@ -58,49 +76,49 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
     <div className="preview-sticky-wrapper">
       {/* Top Toolbar */}
       <div className="preview-toolbar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '13px', fontWeight: '700', fontFamily: 'var(--font-display)', color: 'var(--color-text-main)' }}>
-            Live Letterhead Preview
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ fontSize: '12.5px', fontWeight: '700', fontFamily: 'var(--font-display)', color: 'var(--color-text-main)' }}>
+            Letterhead Preview
           </span>
-          <span className="badge badge-paid" style={{ fontSize: '10px' }}>A4 Print Ready</span>
+          <span className="badge badge-paid" style={{ fontSize: '9.5px' }}>A4</span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
           {/* Zoom controls */}
-          <div style={{ display: 'flex', alignItems: 'center', background: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-md)', padding: '2px 6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', background: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-md)', padding: '2px 4px' }}>
             <button 
               className="btn-icon" 
-              style={{ border: 'none', background: 'transparent', padding: '4px' }}
-              onClick={() => setZoom(prev => Math.max(0.5, prev - 0.1))}
+              style={{ border: 'none', background: 'transparent', padding: '3px', minWidth: '26px', minHeight: '26px' }}
+              onClick={() => setZoom(prev => Math.max(0.35, prev - 0.08))}
               title="Zoom out"
             >
-              <ZoomOut size={14} />
+              <ZoomOut size={13} />
             </button>
-            <span style={{ fontSize: '11.5px', fontWeight: '600', padding: '0 6px' }}>
+            <span style={{ fontSize: '11px', fontWeight: '600', padding: '0 4px' }}>
               {Math.round(zoom * 100)}%
             </span>
             <button 
               className="btn-icon" 
-              style={{ border: 'none', background: 'transparent', padding: '4px' }}
-              onClick={() => setZoom(prev => Math.min(1.2, prev + 0.1))}
+              style={{ border: 'none', background: 'transparent', padding: '3px', minWidth: '26px', minHeight: '26px' }}
+              onClick={() => setZoom(prev => Math.min(1.2, prev + 0.08))}
               title="Zoom in"
             >
-              <ZoomIn size={14} />
+              <ZoomIn size={13} />
             </button>
             <button 
               className="btn-icon" 
-              style={{ border: 'none', background: 'transparent', padding: '4px' }}
-              onClick={() => setZoom(0.85)}
-              title="Reset Zoom"
+              style={{ border: 'none', background: 'transparent', padding: '3px', minWidth: '26px', minHeight: '26px' }}
+              onClick={() => setZoom(getInitialZoom())}
+              title="Fit Screen"
             >
-              <Maximize2 size={13} />
+              <Maximize2 size={12} />
             </button>
           </div>
 
           {/* Print button */}
-          <button className="btn btn-secondary btn-sm" onClick={handlePrint} title="Direct Browser Print">
-            <Printer size={14} />
-            <span>Print</span>
+          <button className="btn btn-secondary btn-sm" onClick={handlePrint} title="Browser Print">
+            <Printer size={13} />
+            <span className="hide-on-xs">Print</span>
           </button>
 
           {/* Puppeteer PDF Download */}
@@ -108,16 +126,16 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
             className="btn btn-primary btn-sm" 
             onClick={onDownloadPdf}
             disabled={isGeneratingPdf}
-            title="Download PDF generated via Puppeteer"
+            title="Download PDF"
           >
             {isGeneratingPdf ? (
               <>
-                <Loader2 size={14} className="animate-spin" />
-                <span>Downloading PDF...</span>
+                <Loader2 size={13} className="animate-spin" />
+                <span>PDF...</span>
               </>
             ) : (
               <>
-                <Download size={14} />
+                <Download size={13} />
                 <span>Download PDF</span>
               </>
             )}

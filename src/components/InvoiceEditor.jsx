@@ -7,14 +7,12 @@ import {
   Download, 
   Sparkles, 
   RotateCcw, 
-  Calendar, 
   User, 
   DollarSign, 
   CreditCard, 
   PenTool, 
   FileText,
   Percent,
-  Hash,
   Loader2
 } from 'lucide-react';
 import { CURRENCIES } from '../utils/presets';
@@ -30,12 +28,10 @@ export default function InvoiceEditor({
   isSaving,
   isGeneratingPdf
 }) {
-  // Update invoice top-level field
   const updateField = (field, val) => {
     onChange({ ...invoice, [field]: val });
   };
 
-  // Update nested client field
   const updateClient = (field, val) => {
     onChange({
       ...invoice,
@@ -43,7 +39,6 @@ export default function InvoiceEditor({
     });
   };
 
-  // Update nested paymentDetails field
   const updatePayment = (field, val) => {
     onChange({
       ...invoice,
@@ -51,13 +46,11 @@ export default function InvoiceEditor({
     });
   };
 
-  // Update nested pricing field and recalculate totals
   const updatePricing = (field, val) => {
     const newPricing = { ...invoice.pricing, [field]: val };
     recalcPricing(invoice.items, newPricing);
   };
 
-  // Recalculate all amounts
   const recalcPricing = (items = invoice.items, pricingConfig = invoice.pricing) => {
     let subtotal = 0;
     const updatedItems = items.map(item => {
@@ -98,7 +91,6 @@ export default function InvoiceEditor({
     });
   };
 
-  // Item helpers
   const handleItemChange = (index, field, val) => {
     const updated = [...invoice.items];
     updated[index] = { ...updated[index], [field]: val };
@@ -137,27 +129,29 @@ export default function InvoiceEditor({
     }
   };
 
+  const symbol = invoice.currency?.symbol || '₦';
+
   return (
     <div className="invoice-editor-wrap">
       {/* Top Action Bar */}
-      <div className="card" style={{ marginBottom: '20px', padding: '16px 20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+      <div className="card" style={{ marginBottom: '16px', padding: '14px 16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
           <div>
-            <span style={{ fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-primary)' }}>
+            <span style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-primary)' }}>
               Village Coders Studio
             </span>
-            <h2 style={{ fontSize: '20px', fontWeight: '800' }}>
-              {invoice._id ? `Edit Invoice (${invoice.invoiceNumber})` : 'Create New Invoice'}
+            <h2 style={{ fontSize: '18px', fontWeight: '800' }}>
+              {invoice._id ? `Edit ${invoice.invoiceNumber}` : 'Create Invoice'}
             </h2>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            <button className="btn btn-secondary btn-sm" onClick={onReset} title="Reset Form to Defaults">
-              <RotateCcw size={14} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+            <button className="btn btn-secondary btn-sm" onClick={onReset} title="Reset Form">
+              <RotateCcw size={13} />
               <span>Reset</span>
             </button>
             <button className="btn btn-secondary btn-sm" onClick={onOpenPresets} title="Load Template Preset">
-              <Sparkles size={14} style={{ color: 'var(--color-accent)' }} />
+              <Sparkles size={13} style={{ color: 'var(--color-accent)' }} />
               <span>Presets</span>
             </button>
             <button 
@@ -166,16 +160,16 @@ export default function InvoiceEditor({
               disabled={isGeneratingPdf}
               title="Download Puppeteer PDF"
             >
-              {isGeneratingPdf ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
-              <span>Puppeteer PDF</span>
+              {isGeneratingPdf ? <Loader2 size={13} className="animate-spin" /> : <Download size={13} />}
+              <span>PDF</span>
             </button>
             <button 
-              className="btn btn-primary" 
+              className="btn btn-primary btn-sm" 
               onClick={onSave}
               disabled={isSaving}
             >
-              {isSaving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
-              <span>{invoice._id ? 'Update in Database' : 'Save to Database'}</span>
+              {isSaving ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />}
+              <span>{invoice._id ? 'Update' : 'Save'}</span>
             </button>
           </div>
         </div>
@@ -184,32 +178,30 @@ export default function InvoiceEditor({
       {/* 1. General Invoice Details */}
       <div className="form-section-card">
         <div className="section-title">
-          <FileText size={17} style={{ color: 'var(--color-primary)' }} />
+          <FileText size={16} style={{ color: 'var(--color-primary)' }} />
           <span>1. Invoice Information</span>
         </div>
 
         <div className="grid-3">
           <div className="form-group">
             <label className="form-label">Invoice Number</label>
-            <div style={{ position: 'relative' }}>
-              <input 
-                type="text" 
-                className="form-input"
-                value={invoice.invoiceNumber}
-                onChange={(e) => updateField('invoiceNumber', e.target.value)}
-                placeholder="e.g. VC-2026-0001"
-              />
-            </div>
+            <input 
+              type="text" 
+              className="form-input"
+              value={invoice.invoiceNumber}
+              onChange={(e) => updateField('invoiceNumber', e.target.value)}
+              placeholder="e.g. VC-2026-0001"
+            />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Invoice Title / Header</label>
+            <label className="form-label">Invoice Title</label>
             <input 
               type="text" 
               className="form-input"
               value={invoice.title}
               onChange={(e) => updateField('title', e.target.value)}
-              placeholder="e.g. INVOICE / SERVICES INVOICE"
+              placeholder="e.g. INVOICE"
             />
           </div>
 
@@ -241,7 +233,7 @@ export default function InvoiceEditor({
           </div>
 
           <div className="form-group">
-            <label className="form-label">Payment Due Date</label>
+            <label className="form-label">Due Date</label>
             <input 
               type="date" 
               className="form-input"
@@ -254,7 +246,7 @@ export default function InvoiceEditor({
             <label className="form-label">Currency</label>
             <select 
               className="form-select"
-              value={invoice.currency?.code || 'USD'}
+              value={invoice.currency?.code || 'NGN'}
               onChange={(e) => handleCurrencyChange(e.target.value)}
             >
               {CURRENCIES.map(c => (
@@ -266,7 +258,7 @@ export default function InvoiceEditor({
 
         <div className="grid-2">
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">PO / Reference Number (Optional)</label>
+            <label className="form-label">PO / Reference (Optional)</label>
             <input 
               type="text" 
               className="form-input"
@@ -278,16 +270,16 @@ export default function InvoiceEditor({
         </div>
       </div>
 
-      {/* 2. Client / Billed To */}
+      {/* 2. Client Details */}
       <div className="form-section-card">
         <div className="section-title">
-          <User size={17} style={{ color: 'var(--color-primary)' }} />
+          <User size={16} style={{ color: 'var(--color-primary)' }} />
           <span>2. Client Details (Billed To)</span>
         </div>
 
         <div className="grid-2">
           <div className="form-group">
-            <label className="form-label">Client Name / Contact Person *</label>
+            <label className="form-label">Client Name *</label>
             <input 
               type="text" 
               className="form-input"
@@ -298,20 +290,20 @@ export default function InvoiceEditor({
           </div>
 
           <div className="form-group">
-            <label className="form-label">Client Company Name</label>
+            <label className="form-label">Company Name</label>
             <input 
               type="text" 
               className="form-input"
               value={invoice.client?.company || ''}
               onChange={(e) => updateClient('company', e.target.value)}
-              placeholder="e.g. Acme Innovations Corp"
+              placeholder="e.g. Acme Innovations Ltd"
             />
           </div>
         </div>
 
         <div className="grid-2">
           <div className="form-group">
-            <label className="form-label">Client Email Address</label>
+            <label className="form-label">Email Address</label>
             <input 
               type="email" 
               className="form-input"
@@ -328,89 +320,90 @@ export default function InvoiceEditor({
               className="form-input"
               value={invoice.client?.phone || ''}
               onChange={(e) => updateClient('phone', e.target.value)}
-              placeholder="e.g. +1 555 123 4567"
+              placeholder="e.g. +234 802 345 6789"
             />
           </div>
         </div>
 
         <div className="grid-3">
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Street Address</label>
+            <label className="form-label">Address</label>
             <input 
               type="text" 
               className="form-input"
               value={invoice.client?.address || ''}
               onChange={(e) => updateClient('address', e.target.value)}
-              placeholder="e.g. 100 Tech Blvd, Suite 400"
+              placeholder="e.g. 14 Admiralty Way"
             />
           </div>
 
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">City, State / Zip</label>
+            <label className="form-label">City / State</label>
             <input 
               type="text" 
               className="form-input"
               value={invoice.client?.city || ''}
               onChange={(e) => updateClient('city', e.target.value)}
-              placeholder="e.g. New York, NY 10001"
+              placeholder="e.g. Lagos"
             />
           </div>
 
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Tax / VAT ID (Optional)</label>
+            <label className="form-label">Tax / TIN ID</label>
             <input 
               type="text" 
               className="form-input"
               value={invoice.client?.taxId || ''}
               onChange={(e) => updateClient('taxId', e.target.value)}
-              placeholder="e.g. US-EIN-12345678"
+              placeholder="e.g. TIN-12345678"
             />
           </div>
         </div>
       </div>
 
-      {/* 3. Line Items */}
+      {/* 3. Line Items (Desktop Table + Mobile Cards) */}
       <div className="form-section-card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
           <div className="section-title" style={{ margin: 0 }}>
-            <DollarSign size={17} style={{ color: 'var(--color-primary)' }} />
-            <span>3. Line Items & Services</span>
+            <DollarSign size={16} style={{ color: 'var(--color-primary)' }} />
+            <span>3. Line Items ({invoice.items?.length || 0})</span>
           </div>
           <button className="btn btn-secondary btn-sm" onClick={addItem}>
-            <Plus size={14} />
+            <Plus size={13} />
             <span>Add Item</span>
           </button>
         </div>
 
-        <div className="table-responsive">
+        {/* Desktop Table View */}
+        <div className="table-responsive desktop-table-view">
           <table className="items-form-table">
             <thead>
               <tr>
                 <th style={{ width: '40%' }}>Item & Description</th>
                 <th style={{ width: '15%' }}>Qty</th>
-                <th style={{ width: '20%' }}>Unit Price ({invoice.currency?.symbol})</th>
+                <th style={{ width: '20%' }}>Unit Price ({symbol})</th>
                 <th style={{ width: '15%' }}>Amount</th>
                 <th style={{ width: '10%', textAlign: 'center' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {invoice.items && invoice.items.map((item, idx) => (
-                <tr key={item.id || idx} className="item-row">
+                <tr key={item.id || idx}>
                   <td>
                     <input 
                       type="text"
                       className="form-input"
-                      style={{ fontWeight: '600', marginBottom: '6px' }}
+                      style={{ fontWeight: '600', marginBottom: '5px' }}
                       value={item.description}
                       onChange={(e) => handleItemChange(idx, 'description', e.target.value)}
-                      placeholder="Item / Service Name"
+                      placeholder="Service / Item Name"
                     />
                     <textarea 
                       className="form-textarea"
-                      style={{ minHeight: '50px', fontSize: '12px' }}
+                      style={{ minHeight: '45px', fontSize: '11.5px' }}
                       value={item.details}
                       onChange={(e) => handleItemChange(idx, 'details', e.target.value)}
-                      placeholder="Detailed description, deliverables, or specifications (optional)"
+                      placeholder="Scope, specifications, or notes"
                     />
                   </td>
                   <td>
@@ -433,25 +426,16 @@ export default function InvoiceEditor({
                       onChange={(e) => handleItemChange(idx, 'rate', e.target.value)}
                     />
                   </td>
-                  <td style={{ verticalAlign: 'middle', fontWeight: '700', fontSize: '14px', color: 'var(--color-text-main)' }}>
-                    {invoice.currency?.symbol}{Number(item.amount || (item.quantity * item.rate)).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  <td style={{ verticalAlign: 'middle', fontWeight: '700', fontSize: '13px', color: 'var(--color-text-main)' }}>
+                    {symbol}{Number(item.amount || (item.quantity * item.rate)).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                   </td>
                   <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
                     <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
-                      <button 
-                        className="btn-icon" 
-                        onClick={() => duplicateItem(idx)}
-                        title="Duplicate row"
-                      >
-                        <Copy size={13} />
+                      <button className="btn-icon" onClick={() => duplicateItem(idx)} title="Duplicate">
+                        <Copy size={12} />
                       </button>
-                      <button 
-                        className="btn-icon" 
-                        style={{ color: 'var(--color-danger)' }}
-                        onClick={() => removeItem(idx)}
-                        title="Delete row"
-                      >
-                        <Trash2 size={13} />
+                      <button className="btn-icon" style={{ color: 'var(--color-danger)' }} onClick={() => removeItem(idx)} title="Delete">
+                        <Trash2 size={12} />
                       </button>
                     </div>
                   </td>
@@ -461,21 +445,89 @@ export default function InvoiceEditor({
           </table>
         </div>
 
+        {/* Mobile Item Cards View */}
+        <div>
+          {invoice.items && invoice.items.map((item, idx) => (
+            <div key={item.id || idx} className="mobile-item-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span style={{ fontSize: '12px', fontWeight: '700', color: 'var(--color-primary)' }}>Item #{idx + 1}</span>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <button className="btn-icon btn-sm" onClick={() => duplicateItem(idx)}><Copy size={12} /></button>
+                  <button className="btn-icon btn-sm" style={{ color: 'var(--color-danger)' }} onClick={() => removeItem(idx)}><Trash2 size={12} /></button>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <input 
+                  type="text"
+                  className="form-input"
+                  style={{ fontWeight: '600' }}
+                  value={item.description}
+                  onChange={(e) => handleItemChange(idx, 'description', e.target.value)}
+                  placeholder="Item / Service Name"
+                />
+              </div>
+
+              <div className="form-group">
+                <textarea 
+                  className="form-textarea"
+                  style={{ minHeight: '40px', fontSize: '12px' }}
+                  value={item.details}
+                  onChange={(e) => handleItemChange(idx, 'details', e.target.value)}
+                  placeholder="Details (optional)"
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label" style={{ fontSize: '11px' }}>Qty</label>
+                  <input 
+                    type="number"
+                    min="0"
+                    step="any"
+                    className="form-input"
+                    value={item.quantity}
+                    onChange={(e) => handleItemChange(idx, 'quantity', e.target.value)}
+                  />
+                </div>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label" style={{ fontSize: '11px' }}>Rate ({symbol})</label>
+                  <input 
+                    type="number"
+                    min="0"
+                    step="any"
+                    className="form-input"
+                    value={item.rate}
+                    onChange={(e) => handleItemChange(idx, 'rate', e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', paddingTop: '8px', borderTop: '1px dashed var(--color-border)' }}>
+                <span style={{ fontSize: '11.5px', color: 'var(--color-text-muted)', fontWeight: '600' }}>Item Total:</span>
+                <span style={{ fontSize: '14px', fontWeight: '800', color: 'var(--color-text-main)' }}>
+                  {symbol}{Number(item.amount || (item.quantity * item.rate)).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
         <button 
           className="btn btn-secondary" 
-          style={{ width: '100%', marginTop: '14px', borderStyle: 'dashed' }}
+          style={{ width: '100%', marginTop: '10px', borderStyle: 'dashed' }}
           onClick={addItem}
         >
-          <Plus size={15} />
+          <Plus size={14} />
           <span>Add Another Line Item</span>
         </button>
       </div>
 
-      {/* 4. Financial Calculations / Pricing */}
+      {/* 4. Pricing / Calculations */}
       <div className="form-section-card">
         <div className="section-title">
-          <Percent size={17} style={{ color: 'var(--color-primary)' }} />
-          <span>4. Discounts, Taxes & Deposit</span>
+          <Percent size={16} style={{ color: 'var(--color-primary)' }} />
+          <span>4. Discounts & Adjustments</span>
         </div>
 
         <div className="grid-4">
@@ -487,7 +539,7 @@ export default function InvoiceEditor({
               onChange={(e) => updatePricing('discountType', e.target.value)}
             >
               <option value="percent">Percentage (%)</option>
-              <option value="fixed">Fixed Amount ({invoice.currency?.symbol})</option>
+              <option value="fixed">Fixed ({symbol})</option>
             </select>
           </div>
 
@@ -504,7 +556,7 @@ export default function InvoiceEditor({
           </div>
 
           <div className="form-group">
-            <label className="form-label">Tax / VAT Rate (%)</label>
+            <label className="form-label">Tax Rate (%)</label>
             <input 
               type="number"
               min="0"
@@ -512,12 +564,12 @@ export default function InvoiceEditor({
               className="form-input"
               value={invoice.pricing?.taxRate || 0}
               onChange={(e) => updatePricing('taxRate', e.target.value)}
-              placeholder="e.g. 7.5 or 20"
+              placeholder="e.g. 7.5"
             />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Shipping / Extra Fee</label>
+            <label className="form-label">Extra Fee ({symbol})</label>
             <input 
               type="number"
               min="0"
@@ -531,7 +583,7 @@ export default function InvoiceEditor({
 
         <div className="grid-2">
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Deposit / Paid in Advance ({invoice.currency?.symbol})</label>
+            <label className="form-label">Deposit / Paid Advance ({symbol})</label>
             <input 
               type="number"
               min="0"
@@ -539,33 +591,31 @@ export default function InvoiceEditor({
               className="form-input"
               value={invoice.pricing?.deposit || 0}
               onChange={(e) => updatePricing('deposit', e.target.value)}
-              placeholder="Amount client already paid"
             />
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '20px', padding: '10px 16px', background: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-md)' }}>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', fontWeight: '600' }}>TOTAL AMOUNT</div>
-              <div style={{ fontSize: '16px', fontWeight: '800', fontFamily: 'var(--font-display)', color: 'var(--color-text-main)' }}>
-                {invoice.currency?.symbol}{Number(invoice.pricing?.total || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 14px', background: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-md)' }}>
+            <div>
+              <div style={{ fontSize: '10px', color: 'var(--color-text-muted)', fontWeight: '600' }}>TOTAL</div>
+              <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-display)' }}>
+                {symbol}{Number(invoice.pricing?.total || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
               </div>
             </div>
-            <div style={{ width: '1px', height: '30px', background: 'var(--color-border)' }} />
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '11px', color: 'var(--color-primary)', fontWeight: '700' }}>BALANCE DUE</div>
-              <div style={{ fontSize: '20px', fontWeight: '800', fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>
-                {invoice.currency?.symbol}{Number(invoice.pricing?.balanceDue || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              <div style={{ fontSize: '10px', color: 'var(--color-primary)', fontWeight: '700' }}>BALANCE DUE</div>
+              <div style={{ fontSize: '17px', fontWeight: '800', fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>
+                {symbol}{Number(invoice.pricing?.balanceDue || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 5. Payment Details & Bank Information */}
+      {/* 5. Payment Details */}
       <div className="form-section-card">
         <div className="section-title">
-          <CreditCard size={17} style={{ color: 'var(--color-primary)' }} />
-          <span>5. Payment Instructions & Bank Details</span>
+          <CreditCard size={16} style={{ color: 'var(--color-primary)' }} />
+          <span>5. Payment Instructions</span>
         </div>
 
         <div className="grid-3">
@@ -576,7 +626,7 @@ export default function InvoiceEditor({
               className="form-input"
               value={invoice.paymentDetails?.bankName || ''}
               onChange={(e) => updatePayment('bankName', e.target.value)}
-              placeholder="e.g. Standard Chartered Bank"
+              placeholder="e.g. Access Bank"
             />
           </div>
 
@@ -587,53 +637,18 @@ export default function InvoiceEditor({
               className="form-input"
               value={invoice.paymentDetails?.accountName || ''}
               onChange={(e) => updatePayment('accountName', e.target.value)}
-              placeholder="e.g. Village Coders Tech Ltd"
+              placeholder="e.g. Village Coders Ltd"
             />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Account Number / IBAN</label>
+            <label className="form-label">Account Number</label>
             <input 
               type="text" 
               className="form-input"
               value={invoice.paymentDetails?.accountNumber || ''}
               onChange={(e) => updatePayment('accountNumber', e.target.value)}
               placeholder="e.g. 0123456789"
-            />
-          </div>
-        </div>
-
-        <div className="grid-3">
-          <div className="form-group">
-            <label className="form-label">SWIFT / BIC Code</label>
-            <input 
-              type="text" 
-              className="form-input"
-              value={invoice.paymentDetails?.swift || ''}
-              onChange={(e) => updatePayment('swift', e.target.value)}
-              placeholder="e.g. SCBLNGLA"
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">PayPal Email (Optional)</label>
-            <input 
-              type="email" 
-              className="form-input"
-              value={invoice.paymentDetails?.paypalEmail || ''}
-              onChange={(e) => updatePayment('paypalEmail', e.target.value)}
-              placeholder="e.g. payments@villagecoders.io"
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Crypto / Web3 Wallet (Optional)</label>
-            <input 
-              type="text" 
-              className="form-input"
-              value={invoice.paymentDetails?.cryptoAddress || ''}
-              onChange={(e) => updatePayment('cryptoAddress', e.target.value)}
-              placeholder="e.g. 0x... (USDT ERC20/TRC20)"
             />
           </div>
         </div>
@@ -646,12 +661,12 @@ export default function InvoiceEditor({
               className="form-input"
               value={invoice.paymentDetails?.paymentTerms || ''}
               onChange={(e) => updatePayment('paymentTerms', e.target.value)}
-              placeholder="e.g. Payment due within 14 days"
+              placeholder="e.g. Due within 14 days"
             />
           </div>
 
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Notes & Remarks to Client</label>
+            <label className="form-label">Notes to Client</label>
             <input 
               type="text" 
               className="form-input"
@@ -667,35 +682,35 @@ export default function InvoiceEditor({
       <div className="form-section-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div className="section-title" style={{ margin: 0 }}>
-            <PenTool size={17} style={{ color: 'var(--color-primary)' }} />
+            <PenTool size={16} style={{ color: 'var(--color-primary)' }} />
             <span>6. Digital Signature</span>
           </div>
           <button className="btn btn-secondary btn-sm" onClick={onOpenSignature}>
-            <PenTool size={13} />
+            <PenTool size={12} />
             <span>Edit Signature</span>
           </button>
         </div>
 
-        <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--color-bg-subtle)', padding: '12px 18px', borderRadius: 'var(--radius-md)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--color-bg-subtle)', padding: '10px 14px', borderRadius: 'var(--radius-md)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ 
               fontFamily: invoice.signature?.type === 'typed' ? 'Caveat, cursive' : 'inherit',
-              fontSize: invoice.signature?.type === 'typed' ? '24px' : '14px',
+              fontSize: invoice.signature?.type === 'typed' ? '22px' : '13px',
               color: 'var(--color-text-main)'
             }}>
               {invoice.signature?.type === 'drawn' && invoice.signature?.value ? (
-                <img src={invoice.signature.value} alt="Sig" style={{ height: '36px' }} />
+                <img src={invoice.signature.value} alt="Sig" style={{ height: '30px' }} />
               ) : (
                 invoice.signature?.value || 'Village Coders Management'
               )}
             </div>
-            <div style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
+            <div style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>
               ({invoice.signature?.signerName || 'Village Coders Ltd'})
             </div>
           </div>
 
-          <span className="badge badge-paid" style={{ fontSize: '10px' }}>
-            {invoice.signature?.type === 'drawn' ? 'Drawn Signature' : 'Electronic Signature'}
+          <span className="badge badge-paid" style={{ fontSize: '9.5px' }}>
+            Signed
           </span>
         </div>
       </div>
