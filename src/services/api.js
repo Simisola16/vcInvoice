@@ -2,7 +2,8 @@
  * API Service for communicating with Express + MongoDB backend
  */
 
-const rawApiUrl = import.meta.env.VITE_API_URL || '';
+const defaultProdUrl = 'https://vcivoicebackend.onrender.com';
+const rawApiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? defaultProdUrl : '');
 const API_BASE = rawApiUrl ? (rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl.replace(/\/+$/, '')}/api`) : '/api';
 
 export const api = {
