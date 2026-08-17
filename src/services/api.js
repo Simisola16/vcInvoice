@@ -2,7 +2,8 @@
  * API Service for communicating with Express + MongoDB backend
  */
 
-const API_BASE = '/api';
+const rawApiUrl = import.meta.env.VITE_API_URL || '';
+const API_BASE = rawApiUrl ? (rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl.replace(/\/+$/, '')}/api`) : '/api';
 
 export const api = {
   // Invoices
