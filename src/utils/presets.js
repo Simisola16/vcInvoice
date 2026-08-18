@@ -57,9 +57,6 @@ export const INVOICE_PRESETS = [
       bankName: 'Access Bank PLC / Standard Chartered',
       accountName: 'Village Coders Tech Ltd',
       accountNumber: '0123456789',
-      swift: 'ABNGNGLA',
-      paypalEmail: 'payments@villagecoders.io',
-      cryptoAddress: '0x71C...498f (USDT ERC20 / TRC20)',
       paymentTerms: '50% milestone advance paid, balance due upon final production release.',
       notes: 'Thank you for choosing Village Coders for your engineering needs!'
     }
@@ -101,8 +98,6 @@ export const INVOICE_PRESETS = [
       bankName: 'Access Bank PLC',
       accountName: 'Village Coders Tech Ltd',
       accountNumber: '0987654321',
-      swift: 'ABNGNGLA',
-      paypalEmail: 'payments@villagecoders.io',
       paymentTerms: 'Payment due within 14 days of invoice issue date.',
       notes: 'Source code repository and store ownership will be transferred upon full settlement.'
     }
@@ -144,7 +139,6 @@ export const INVOICE_PRESETS = [
       bankName: 'Access Bank PLC',
       accountName: 'Village Coders Tech Ltd',
       accountNumber: '0123456789',
-      swift: 'ABNGNGLA',
       paymentTerms: 'Payment due on receipt.',
       notes: 'Full Figma source files and design handoff assets included.'
     }
@@ -186,7 +180,6 @@ export const INVOICE_PRESETS = [
       bankName: 'Access Bank PLC',
       accountName: 'Village Coders Tech Ltd',
       accountNumber: '0123456789',
-      swift: 'ABNGNGLA',
       paymentTerms: 'Payment due at the 1st of every month for recurring service retainers.',
       notes: 'Retainer active for current billing cycle.'
     }
@@ -265,10 +258,6 @@ export const DEFAULT_INVOICE_STATE = {
     bankName: 'Access Bank PLC / Standard Chartered',
     accountName: 'Village Coders Tech Ltd',
     accountNumber: '0123456789',
-    swift: 'ABNGNGLA',
-    routingNumber: '',
-    paypalEmail: 'payments@villagecoders.io',
-    cryptoAddress: '0x71C...498f (USDT / ETH)',
     paymentTerms: 'Payment is due within 14 days of invoice issue date.',
     notes: 'Thank you for choosing Village Coders for your web & software engineering needs!'
   },
