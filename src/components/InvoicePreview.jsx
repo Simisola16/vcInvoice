@@ -137,9 +137,9 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
           <img 
             src="/logo.png" 
             alt="Village Coders" 
-            style={{ height: '64px', maxWidth: '210px', objectFit: 'contain' }} 
+            style={{ height: '90px', maxWidth: '260px', objectFit: 'contain' }} 
           />
-          <div style={{ textAlign: 'right', fontSize: '10px', color: '#475569', lineHeight: 1.3 }}>
+          <div style={{ textAlign: 'right', fontSize: '10.5px', color: '#475569', lineHeight: 1.35 }}>
             <div style={{ fontWeight: '700', color: '#0f172a' }}>Village Coders</div>
             <div>villagecoders7@gmail.com</div>
             <div>+234 808 5742 261</div>
@@ -295,11 +295,11 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
           {/* Watermark */}
           <div style={{
             position: 'absolute',
-            top: '52%',
+            top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: '460px',
-            opacity: 0.055,
+            width: '560px',
+            opacity: 0.06,
             pointerEvents: 'none',
             zIndex: 1,
             display: 'flex',
@@ -309,25 +309,25 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
             <img 
               src="/logo.png" 
               alt="Watermark" 
-              style={{ width: '400px', height: 'auto', objectFit: 'contain' }} 
+              style={{ width: '500px', height: 'auto', objectFit: 'contain' }} 
             />
           </div>
 
           {/* Letterhead Header */}
-          <div style={{ position: 'relative', zIndex: 10, padding: '24px 40px 14px 40px' }}>
+          <div style={{ position: 'relative', zIndex: 10, padding: '20px 40px 10px 40px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <img 
                   src="/logo.png" 
                   alt="Village Coders" 
-                  style={{ height: '90px', maxWidth: '300px', objectFit: 'contain' }} 
+                  style={{ height: '125px', maxWidth: '380px', objectFit: 'contain' }} 
                 />
               </div>
 
-              <div style={{ width: '2px', height: '65px', backgroundColor: '#8c725c', margin: '0 8px', borderRadius: '2px' }} />
+              <div style={{ width: '2px', height: '88px', backgroundColor: '#8c725c', margin: '0 12px', borderRadius: '2px' }} />
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '10.5px', color: '#2d3748', fontWeight: 500 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '11px', color: '#2d3748', fontWeight: 500 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <span>📍</span>
                   <span>{sender?.address || 'Fully Remote | Operating Worldwide'}</span>

@@ -28,7 +28,7 @@ export default function Header({
               src="/logo.png" 
               alt="Village Coders" 
               style={{ 
-                height: '38px', 
+                height: '48px', 
                 objectFit: 'contain',
                 filter: theme === 'dark' ? 'drop-shadow(0 0 6px rgba(255,255,255,0.2))' : 'none'
               }} 
