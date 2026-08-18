@@ -137,7 +137,7 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
           <img 
             src="/logo.png" 
             alt="Village Coders" 
-            style={{ height: '48px', maxWidth: '180px', objectFit: 'contain' }} 
+            style={{ height: '64px', maxWidth: '210px', objectFit: 'contain' }} 
           />
           <div style={{ textAlign: 'right', fontSize: '10px', color: '#475569', lineHeight: 1.3 }}>
             <div style={{ fontWeight: '700', color: '#0f172a' }}>Village Coders</div>
@@ -298,7 +298,7 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
             top: '52%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: '420px',
+            width: '460px',
             opacity: 0.055,
             pointerEvents: 'none',
             zIndex: 1,
@@ -309,23 +309,23 @@ export default function InvoicePreview({ invoice, onDownloadPdf, isGeneratingPdf
             <img 
               src="/logo.png" 
               alt="Watermark" 
-              style={{ width: '360px', height: 'auto', objectFit: 'contain' }} 
+              style={{ width: '400px', height: 'auto', objectFit: 'contain' }} 
             />
           </div>
 
           {/* Letterhead Header */}
-          <div style={{ position: 'relative', zIndex: 10, padding: '26px 40px 14px 40px' }}>
+          <div style={{ position: 'relative', zIndex: 10, padding: '24px 40px 14px 40px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <img 
                   src="/logo.png" 
                   alt="Village Coders" 
-                  style={{ height: '65px', maxWidth: '250px', objectFit: 'contain' }} 
+                  style={{ height: '90px', maxWidth: '300px', objectFit: 'contain' }} 
                 />
               </div>
 
-              <div style={{ width: '2px', height: '50px', backgroundColor: '#8c725c', margin: '0 8px', borderRadius: '2px' }} />
+              <div style={{ width: '2px', height: '65px', backgroundColor: '#8c725c', margin: '0 8px', borderRadius: '2px' }} />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '10.5px', color: '#2d3748', fontWeight: 500 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
